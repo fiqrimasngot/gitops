@@ -77,16 +77,16 @@ spec:
     persistence:
       config:
         enabled: true
-        storageClass: "openebs-hostpath"
-        accessMode: ReadWriteOnce
+        storageClass: "nfs-csi"
+        accessMode: ReadWriteMany
         size: 2Gi
         globalMounts:
           - path: /config
         retain: true
       data:
         enabled: true
-        storageClass: "openebs-hostpath"
-        accessMode: ReadWriteOnce
+        storageClass: "nfs-csi"
+        accessMode: ReadWriteMany
         size: 512Gi
         globalMounts:
           - path: /assets
