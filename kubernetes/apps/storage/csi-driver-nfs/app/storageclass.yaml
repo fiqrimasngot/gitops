@@ -7,6 +7,8 @@ provisioner: nfs.csi.k8s.io
 parameters:
   server: "${SECRET_NFS_SVC}"
   share: "/mnt/lab-pool/k3s"
+  subDir: "${pvc.metadata.namespace}-${pvc.metadata.name}"
 reclaimPolicy: Retain
 volumeBindingMode: Immediate
-mountOptions: ["hard", "noatime","nfsvers=4.2","nconnect=8"]
+mountOptions: ["hard", "noatime","nfsvers=4.2"]
+allowVolumeExpansion: true
