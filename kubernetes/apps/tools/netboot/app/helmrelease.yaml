@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 3.0.4
+      version: 3.2.1
       sourceRef:
         kind: HelmRepository
         name: bjw-s-charts
@@ -22,7 +22,7 @@ spec:
           main:
             image:
               repository: ghcr.io/netbootxyz/netbootxyz
-              tag: 0.7.1-nbxyz1
+              tag: latest
     defaultPodOptions:
       hostNetwork: true
     service:
@@ -56,6 +56,7 @@ spec:
           tftp4:
             enabled: true
             port: 30004
+
     ingress:
       main:
         enabled: true
@@ -70,6 +71,7 @@ spec:
         tls:
           - hosts:
               - *host                  
+
     persistence:
       config:
         enabled: true
@@ -83,7 +85,7 @@ spec:
         enabled: true
         storageClass: openebs-hostpath
         accessMode: ReadWriteOnce
-        size: 5Gi
+        size: 512Gi
         globalMounts:
           - path: /assets
         retain: true        
