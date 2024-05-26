@@ -24,7 +24,7 @@ nodes:
   - hostname: "k3svm-1"
     ipAddress: "10.32.1.41"
     installDisk: "/dev/sda"
-    talosImageURL: factory.talos.dev/installer/c9078f9419961640c712a8bf2bb9174933dfcf1da383fd8ea2b7dc21493f8bac
+    talosImageURL: factory.talos.dev/installer/613e1592b2da41ae5e265e8789429f22e121aab91cb4deb6bc3c0b6262961245
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -41,7 +41,7 @@ nodes:
   - hostname: "k3svm-2"
     ipAddress: "10.32.1.42"
     installDisk: "/dev/sda"
-    talosImageURL: factory.talos.dev/installer/c9078f9419961640c712a8bf2bb9174933dfcf1da383fd8ea2b7dc21493f8bac
+    talosImageURL: factory.talos.dev/installer/613e1592b2da41ae5e265e8789429f22e121aab91cb4deb6bc3c0b6262961245
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -58,7 +58,7 @@ nodes:
   - hostname: "k3svm-3"
     ipAddress: "10.32.1.43"
     installDisk: "/dev/sda"
-    talosImageURL: factory.talos.dev/installer/c9078f9419961640c712a8bf2bb9174933dfcf1da383fd8ea2b7dc21493f8bac
+    talosImageURL: factory.talos.dev/installer/613e1592b2da41ae5e265e8789429f22e121aab91cb4deb6bc3c0b6262961245
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -117,6 +117,31 @@ patches:
 
 
 
+  # setup Talos environment, but extra config for Pod Security is also needed
+  - |-
+    cluster:
+      apiServer:
+        admissionControl:
+          - name: PodSecurity
+            configuration:
+              apiVersion: pod-security.admission.config.k8s.io/v1alpha1
+              defaults:
+                enforce: privileged
+              kind: PodSecurityConfiguration  
+
+
+  # for longhorn Data Path Mounts
+  - |-
+    machine:
+      kubelet:
+        extraMounts:
+          - destination: /var/lib/longhorn
+            type: bind
+            source: /var/lib/longhorn
+            options:
+              - bind
+              - rshared
+              - rw
   # Custom sysctl settings
   - |-
     machine:
@@ -175,7 +200,7 @@ controlPlane:
 
     # Enable K8s Talos API Access
     - |-
-      machine:
+      machine:      
         features:
           kubernetesTalosAPIAccess:
             enabled: true

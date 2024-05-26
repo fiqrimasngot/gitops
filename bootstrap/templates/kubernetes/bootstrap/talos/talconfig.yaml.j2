@@ -153,6 +153,31 @@ patches:
           #% endfor %#
   #% endif %#
 
+  # setup Talos environment, but extra config for Pod Security is also needed
+  - |-
+    cluster:
+      apiServer:
+        admissionControl:
+          - name: PodSecurity
+            configuration:
+              apiVersion: pod-security.admission.config.k8s.io/v1alpha1
+              defaults:
+                enforce: privileged
+              kind: PodSecurityConfiguration  
+
+
+  # for longhorn Data Path Mounts
+  - |-
+    machine:
+      kubelet:
+        extraMounts:
+          - destination: /var/lib/longhorn
+            type: bind
+            source: /var/lib/longhorn
+            options:
+              - bind
+              - rshared
+              - rw
   # Custom sysctl settings
   - |-
     machine:
@@ -231,7 +256,7 @@ controlPlane:
 
     # Enable K8s Talos API Access
     - |-
-      machine:
+      machine:      
         features:
           kubernetesTalosAPIAccess:
             enabled: true
