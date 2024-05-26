@@ -7,7 +7,7 @@ metadata:
     kustomize.toolkit.fluxcd.io/substitute: disabled
 provisioner: nfs.csi.k8s.io
 parameters:
-  server: "10.32.1.5"
+  server: "${SECRET_NFS_SVC}"
   share: "/mnt/lab-pool/k3s"
   subDir: "${pvc.metadata.namespace}-${pvc.metadata.name}"
 reclaimPolicy: Retain
