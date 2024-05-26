@@ -3,8 +3,6 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: "nfs-csi"
-  annotations:
-    kustomize.toolkit.fluxcd.io/substitute: disabled
 provisioner: nfs.csi.k8s.io
 parameters:
   server: "${SECRET_NFS_SVC}"
@@ -12,5 +10,5 @@ parameters:
   subDir: "${pvc.metadata.namespace}-${pvc.metadata.name}"
 reclaimPolicy: Retain
 volumeBindingMode: Immediate
-mountOptions: ["hard", "noatime"]
+mountOptions: ["hard", "noatime","nfsvers=4.2","nconnect=8"]
 allowVolumeExpansion: true
