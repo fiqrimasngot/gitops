@@ -10,5 +10,5 @@ parameters:
   subDir: "${pvc.metadata.namespace}-${pvc.metadata.name}"
 reclaimPolicy: Retain
 volumeBindingMode: Immediate
-mountOptions: ["hard", "noatime","nfsvers=4.2","nconnect=8"]
+mountOptions: ["hard", "noatime","nfsvers=4.2"]
 allowVolumeExpansion: true
