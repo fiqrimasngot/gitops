@@ -1,3 +1,4 @@
+#jinja2: trim_blocks: True, lstrip_blocks: True
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
@@ -13,6 +14,7 @@ spec:
         kind: HelmRepository
         name: csi-driver-nfs
         namespace: flux-system
+  maxHistory: 2
   install:
     remediation:
       retries: 3
