@@ -41,7 +41,7 @@
     // automerge
     {
       "description": ["Auto merge Github Actions"],
-      "matchManagers": ["github-actions"],i
+      "matchManagers": ["github-actions"],
       "autoApprove": true,
       "automerge": true,
       "automergeType": "branch",
