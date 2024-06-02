@@ -120,7 +120,7 @@ spec:
     storage: 5Gi
   persistentVolumeReclaimPolicy: Retain
   local:
-    path: /opt/home-media
+    path: /opt/home
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -135,6 +135,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: home-assistant-pvc-media
+  namespace: home
 spec:
   volumeName: home-assistant-pv-media
   accessModes:
@@ -143,7 +144,6 @@ spec:
   resources:
     requests:
       storage: 5Gi
-
 
 ---
 apiVersion: v1
@@ -154,7 +154,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   capacity:
-    storage: 30Gi
+    storage: 5Gi
   persistentVolumeReclaimPolicy: Retain
   local:
     path: /opt/home
@@ -172,11 +172,14 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: home-assistant-pvc
+  namespace: home
 spec:
   volumeName: home-assistant-pv
   accessModes:
     - ReadWriteOnce
-  storageClassName: ""
+  storageClassName: "nfs-csi"
   resources:
     requests:
       storage: 5Gi
+
+
