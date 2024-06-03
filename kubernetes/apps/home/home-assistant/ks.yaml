@@ -6,6 +6,8 @@ metadata:
   namespace: flux-system
 spec:
   targetNamespace: home
+  dependsOn:
+    - name: longhorn
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
