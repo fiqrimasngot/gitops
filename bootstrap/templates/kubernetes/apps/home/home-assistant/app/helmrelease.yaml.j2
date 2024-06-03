@@ -110,63 +110,17 @@ spec:
 
 ---
 apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: home-assistant-pv-media
-spec:
-  accessModes:
-    - ReadWriteOnce
-  capacity:
-    storage: 5Gi
-  persistentVolumeReclaimPolicy: Retain
-  local:
-    path: /opt/home
-  nodeAffinity:
-    required:
-      nodeSelectorTerms:
-        - matchExpressions:
-            - key: kubernetes.io/hostname
-              operator: In
-              values:
-                - Gamat
-
----
-apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: home-assistant-pvc-media
   namespace: home
 spec:
-  volumeName: home-assistant-pv-media
   accessModes:
     - ReadWriteOnce
   storageClassName: "nfs-csi"
   resources:
     requests:
       storage: 5Gi
-
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: home-assistant-pv
-spec:
-  accessModes:
-    - ReadWriteOnce
-  capacity:
-    storage: 5Gi
-  persistentVolumeReclaimPolicy: Retain
-  local:
-    path: /opt/home
-  nodeAffinity:
-    required:
-      nodeSelectorTerms:
-        - matchExpressions:
-            - key: kubernetes.io/hostname
-              operator: In
-              values:
-                - Gamat
-
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -174,7 +128,6 @@ metadata:
   name: home-assistant-pvc
   namespace: home
 spec:
-  volumeName: home-assistant-pv
   accessModes:
     - ReadWriteOnce
   storageClassName: "nfs-csi"
