@@ -59,13 +59,9 @@ spec:
       config:
         enabled: true
         existingClaim: home-assistant-pvc
-        globalMounts:
-          - path: /config
       media:
         enabled: true
         existingClaim: home-assistant-pvc-media
-        globalMounts:
-          - path: /media
     service:
       main:
         controller: main
@@ -92,7 +88,7 @@ spec:
                   port: http
         tls:
           - hosts:
-            - *host1
+              - *host1
       code:
         enabled: true
         className: internal
@@ -106,7 +102,7 @@ spec:
                   port: http
         tls:
           - hosts:
-            - *host2
+              - *host2
 
 ---
 apiVersion: v1
@@ -134,5 +130,3 @@ spec:
   resources:
     requests:
       storage: 5Gi
-
-
