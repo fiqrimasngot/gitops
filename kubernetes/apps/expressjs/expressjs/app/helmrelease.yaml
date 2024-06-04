@@ -15,5 +15,25 @@ spec:
         name: expressjs-k8s
         namespace: flux-system
   values:
+    service:
+      main:
+        controller: main
+        ports:
+          http:
+            port: 8080
+
     ingress:
-      enabled: false
+      enabled: true
+      className: "internal"
+      hosts:
+        - host: &host test.${SECRET_DOMAIN}
+          paths:
+            - path: "/"
+              pathType: "Prefix"
+              service:
+                identifier: main
+                port: http
+      tls:
+        - hosts:
+          - *host
+
