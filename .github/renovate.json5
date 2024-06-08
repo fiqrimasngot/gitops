@@ -12,7 +12,7 @@
   "dependencyDashboardTitle": "Renovate Dashboard 🤖",
   "suppressNotifications": ["prEditedNotification", "prIgnoreNotification"],
   "rebaseWhen": "conflicted",
-  "schedule": ["before 5:00am"],
+  "schedule": ["before 5:00am on every day"],
   "ignorePaths": ["**/*.sops.*"],
   "flux": {
     "fileMatch": ["(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$"]
@@ -42,7 +42,6 @@
     {
       "description": ["Auto merge Github Actions"],
       "matchManagers": ["github-actions"],
-      "autoApprove": true,
       "automerge": true,
       "automergeType": "branch",
       "ignoreTests": true,
