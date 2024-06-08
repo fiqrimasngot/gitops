@@ -12,6 +12,7 @@
   "dependencyDashboardTitle": "Renovate Dashboard 🤖",
   "suppressNotifications": ["prEditedNotification", "prIgnoreNotification"],
   "rebaseWhen": "conflicted",
+  "automerge": true,
   "schedule": ["before 5:00am every day"],
   "ignorePaths": ["**/*.sops.*"],
   "flux": {
