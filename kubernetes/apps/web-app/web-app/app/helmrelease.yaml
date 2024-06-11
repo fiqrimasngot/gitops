@@ -35,13 +35,13 @@ spec:
     defaultPodOptions:
       hostNetwork: true
     service:
-      app:
+      main:
         controller: main
         ports:
           http:
             port: *port
     ingress:
-      app:
+      main:
         className: internal
         hosts:
           - host: "nodeapp.${SECRET_DOMAIN}"
