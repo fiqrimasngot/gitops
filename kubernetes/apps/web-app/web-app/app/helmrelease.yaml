@@ -22,7 +22,7 @@ spec:
           main:
             image:
               repository: fiqrimasngot/nodeapp
-              tag: latest
+              tag: 1.0.0
     defaultPodOptions:
       hostNetwork: true
     service:
