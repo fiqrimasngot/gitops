@@ -3,47 +3,87 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: web-app
-  namespace: web-app
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
       chart: app-template
       version: 3.2.1
       sourceRef:
         kind: HelmRepository
-        name: bjw-s-charts
+        name: bjw-s
         namespace: flux-system
-      interval: 15m
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
   values:
     controllers:
-      main:
+      web-app:
+        strategy: RollingUpdate
         containers:
-          main:
+          app:
             image:
               repository: fiqrimasngot/nodeapp
               tag: 1.0.0
+            env:
+              APPID: &port 8080
+              LOG_WITHOUT_NEWLINE: true
+              LOG_IGNORE_PATH: /healthz
+              PROMETHEUS_ENABLED: true
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /healthz
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 64Mi
     defaultPodOptions:
-      hostNetwork: true
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        seccompProfile: { type: RuntimeDefault }
     service:
-      main:
-        controller: main
+      app:
+        controller: web-app
         ports:
           http:
-            port: 4444
+            port: *port
+    serviceMonitor:
+      app:
+        serviceName: web-app
+        endpoints:
+          - port: http
+            scheme: http
+            path: /metrics
+            interval: 1m
+            scrapeTimeout: 10s
     ingress:
-      main:
-        enabled: true
-        className: "internal"
+      app:
+        className: internal
         hosts:
-          - host: &host "nodeapp.${SECRET_DOMAIN}"
+          - host: "nodeapp.${SECRET_DOMAIN}"
             paths:
-              - path: "/"
-                pathType: "Prefix"
+              - path: /
                 service:
-                  identifier: main
+                  identifier: app
                   port: http
-        tls:
-          - hosts:
-              - *host
-
