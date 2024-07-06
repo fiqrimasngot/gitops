@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: sonarr
+  name: bazarr
 spec:
   interval: 30m
   chart:
@@ -27,23 +27,20 @@ spec:
       namespace: longhorn-system
   values:
     controllers:
-      sonarr:
+      bazarr:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
           app:
             image:
-              repository: ghcr.io/onedr0p/sonarr-develop
-              tag: 4.0.5.1801@sha256:5c4022bd2b0d5c751b8dcb262abc61df917e778405cf4739d5f3d77b81e2f8a3
+              repository: ghcr.io/onedr0p/bazarr
+              tag: 1.4.3@sha256:d2b70813f7d636fb1ab3448e13ca4074630b63216c6c6d02d034cd5d9e938ea3
             env:
-              SONARR__APP__INSTANCENAME: Sonarr
-              SONARR__APP__THEME: dark
-              SONARR__AUTH__METHOD: External
-              SONARR__AUTH__REQUIRED: DisabledForLocalAddresses
-              SONARR__LOG__DBENABLED: "False"
-              SONARR__LOG__LEVEL: info
-              SONARR__SERVER__PORT: &port 80
-              SONARR__UPDATE__BRANCH: develop
+              BAZARR__INSTANCE_NAME: bazarr
+              BAZARR__AUTHENTICATION_METHOD: External
+              BAZARR__AUTHENTICATION_REQUIRED: DisabledForLocalAddresses
+              BAZARR__LOG_LEVEL: info
+              BAZARR__PORT: &port 6767
               TZ: ${TIMEZONE}
             probes:
               liveness: &probes
@@ -51,7 +48,7 @@ spec:
                 custom: true
                 spec:
                   httpGet:
-                    path: /ping
+                    path: /health
                     port: *port
                   initialDelaySeconds: 0
                   periodSeconds: 10
@@ -78,7 +75,7 @@ spec:
         seccompProfile: { type: RuntimeDefault }
     service:
       app:
-        controller: sonarr
+        controller: bazarr
         ports:
           http:
             port: *port
@@ -94,7 +91,7 @@ spec:
                   port: http
     persistence:
       config:
-        existingClaim: sonarr
+        existingClaim: bazarr
       tmp:
         type: emptyDir
       media:
@@ -107,7 +104,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: "sonarr"
+  name: "bazarr"
 spec:
   accessModes:
     - ReadWriteOnce
