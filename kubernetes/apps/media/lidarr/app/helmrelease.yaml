@@ -119,6 +119,7 @@ spec:
         globalMounts:
           - path: /media
             readOnly: true
+          - path: /downloads
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
