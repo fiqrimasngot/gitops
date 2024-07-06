@@ -12,3 +12,4 @@ resources:
   - ./overseerr/ks.yaml
   # - ./plex/ks.yaml
   - ./lidarr/ks.yaml
+  - ./jellyfin/ks.yaml
