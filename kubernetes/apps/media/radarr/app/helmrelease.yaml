@@ -103,6 +103,8 @@ spec:
         path: /mnt/lab-pool/k3s
         globalMounts:
           - path: /media
+          - path: /downloads
+
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
