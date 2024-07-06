@@ -111,9 +111,10 @@ spec:
       media:
         type: nfs
         server: ${SECRET_NFS_SVC}
-        path: /mnt/lab-pool/k3s/downloads
+        path: /mnt/lab-pool/k3s
         globalMounts:
           - path: /downloads
+            subPath: downloads
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
