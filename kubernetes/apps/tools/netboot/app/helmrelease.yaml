@@ -35,6 +35,7 @@ spec:
         enabled: true
         primary: false
         type: LoadBalancer
+        loadBalancerIP: ${SECRET_NETBOOT_SVC}
         controller: main
         annotations:
           io.cilium/lb-ipam-ips: ${SECRET_NETBOOT_SVC}
@@ -56,6 +57,7 @@ spec:
           tftp:
             enabled: true
             primary: false
+            port: 69
             nodePort: 69
             targetPort: 69
             protocol: UDP
