@@ -35,7 +35,6 @@ spec:
         enabled: true
         primary: false
         type: LoadBalancer
-        loadBalancerIP: ${SECRET_NETBOOT_SVC}
         controller: main
         annotations:
           io.cilium/lb-ipam-ips: ${SECRET_NETBOOT_SVC}
