@@ -51,7 +51,7 @@ spec:
         controller: main
         type: LoadBalancer
         annotations:
-          io.cilium/lb-ipam-ips: 10.32.1.87
+          io.cilium/lb-ipam-ips: ${SECRET_NETBOOT_SVC}
         ports:
           tftp:
             enabled: true
