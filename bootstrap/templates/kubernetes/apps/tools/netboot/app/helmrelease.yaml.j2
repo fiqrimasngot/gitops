@@ -35,9 +35,10 @@ spec:
         enabled: true
         primary: false
         type: LoadBalancer
+        loadBalancerIP: ${SECRET_NETBOOT_SVC}
         controller: main
         annotations:
-          io.cilium/lb-ipam-ips: ${SECRET_NETBOOT_SVC}
+          metallb.universe.tf/allow-shared-ip: pxe-svc
         ports:
           web:
             enabled: true
@@ -49,15 +50,12 @@ spec:
         enabled: true
         primary: false
         controller: main
-        type: LoadBalancer
-        annotations:
-          io.cilium/lb-ipam-ips: 10.32.1.87
+        type: NodePort
         ports:
           tftp:
             enabled: true
             primary: false
             port: 69
-            nodePort: 69
             targetPort: 69
             protocol: UDP
     ingress:
