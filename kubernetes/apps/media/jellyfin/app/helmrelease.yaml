@@ -41,8 +41,8 @@ spec:
                 cpu: 23m
                 memory: 7486M
               #limits:
-                #  gpu.intel.com/i915: 1
-                #  memory: 7486M
+              #  gpu.intel.com/i915: 1
+              #  memory: 7486M
     service:
       main:
         controller: main
