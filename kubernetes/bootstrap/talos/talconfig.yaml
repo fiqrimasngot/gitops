@@ -72,6 +72,36 @@ nodes:
         mtu: 1500
         vip:
           ip: "10.32.1.80"
+  - hostname: "k3svm-4"
+    ipAddress: "10.32.1.54"
+    installDisk: "/dev/sda"
+    talosImageURL: factory.talos.dev/installer/c9078f9419961640c712a8bf2bb9174933dfcf1da383fd8ea2b7dc21493f8bac
+    controlPlane: false
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: "bc:24:11:1c:21:39"
+        dhcp: false
+        addresses:
+          - "10.32.1.54/24"
+        routes:
+          - network: 0.0.0.0/0
+            gateway: "10.32.1.1"
+        mtu: 1500
+  - hostname: "k3svm-5"
+    ipAddress: "10.32.1.55"
+    installDisk: "/dev/sda"
+    talosImageURL: factory.talos.dev/installer/c9078f9419961640c712a8bf2bb9174933dfcf1da383fd8ea2b7dc21493f8bac
+    controlPlane: false
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: "bc:24:11:3a:41:7d"
+        dhcp: false
+        addresses:
+          - "10.32.1.55/24"
+        routes:
+          - network: 0.0.0.0/0
+            gateway: "10.32.1.1"
+        mtu: 1500
 
 patches:
   # Configure containerd
