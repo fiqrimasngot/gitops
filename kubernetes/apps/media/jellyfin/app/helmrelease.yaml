@@ -41,15 +41,15 @@ spec:
                 cpu: 23m
                 memory: 7486M
               #limits:
-              #  gpu.intel.com/i915: 1
-              #  memory: 7486M
+                #  gpu.intel.com/i915: 1
+                #  memory: 7486M
     service:
       main:
         controller: main
         type: LoadBalancer
         externalTrafficPolicy: Local
         annotations:
-          io.cilium/lb-ipam-ips: "10.32.1.87"
+          io.cilium/lb-ipam-ips: "${SECRET_JELLYFIN_SVC}"
         ports:
           http:
             port: 8096
@@ -75,7 +75,7 @@ spec:
       media:
         type: nfs
         server: ${SECRET_NFS_SVC}
-        path: /mnt/lab-pool/k3s
+        path: ${SECRET_NFS_MNT}
         globalMounts:
           - path: /media
             readOnly: true

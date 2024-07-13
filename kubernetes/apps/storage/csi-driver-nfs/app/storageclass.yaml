@@ -7,7 +7,7 @@ metadata:
 provisioner: nfs.csi.k8s.io
 parameters:
   server: ${SECRET_NFS_SVC}
-  share: /mnt/lab-pool/k3s
+  share: ${SECRET_NFS_MNT}
 reclaimPolicy: Delete
 volumeBindingMode: Immediate
 mountOptions: ["hard", "noatime"]

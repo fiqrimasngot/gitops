@@ -22,9 +22,6 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
-  dependsOn:
-    - name: longhorn
-      namespace: longhorn-system
   values:
     controllers:
       qbittorrent:
@@ -43,7 +40,7 @@ spec:
               QBT_Preferences__WebUI__AlternativeUIEnabled: false
               QBT_Preferences__WebUI__AuthSubnetWhitelistEnabled: true
               QBT_Preferences__WebUI__AuthSubnetWhitelist: |-
-                10.32.1.0/24, 10.69.0.0/16
+                ${SECRET_NODE_NETWORK}, ${SECRET_POD_NETWORK}
               QBT_Preferences__WebUI__LocalHostAuth: false
               QBT_BitTorrent__Session__Interface: eth0
               QBT_BitTorrent__Session__InterfaceAddress:
@@ -87,7 +84,7 @@ spec:
         controller: qbittorrent
         type: LoadBalancer
         annotations:
-          io.cilium/lb-ipam-ips: 10.32.1.85
+          io.cilium/lb-ipam-ips: ${SECRET_QB_SVC}
         ports:
           http:
             port: *port
@@ -111,7 +108,7 @@ spec:
       media:
         type: nfs
         server: ${SECRET_NFS_SVC}
-        path: /mnt/lab-pool/k3s
+        path: ${SECRET_NFS_MNT}
         globalMounts:
           - path: /downloads
             subPath: downloads
