@@ -21,7 +21,7 @@ spec:
       retries: 5
   values:
     defaultSettings:
-      #backupTarget: "nfs://${SECRET_NFS_SVC}:/mnt/lab-pool/k3s"
+      backupTarget: "nfs://${SECRET_NFS_SVC}:/mnt/lab-pool/k3s"
       defaultReplicaCount: 3
     longhornUI:
       replicas: 3
