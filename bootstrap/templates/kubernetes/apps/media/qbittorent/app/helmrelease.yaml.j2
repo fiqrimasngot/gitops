@@ -40,7 +40,7 @@ spec:
               QBT_Preferences__WebUI__AlternativeUIEnabled: false
               QBT_Preferences__WebUI__AuthSubnetWhitelistEnabled: true
               QBT_Preferences__WebUI__AuthSubnetWhitelist: |-
-                ${SECRET_NODE_NETWORK}, ${SECRET_POD_NETWORK}
+                "#{ bootstrap_node_network }#", "#{ bootstrap_pod_network }#"
               QBT_Preferences__WebUI__LocalHostAuth: false
               QBT_BitTorrent__Session__Interface: eth0
               QBT_BitTorrent__Session__InterfaceAddress:
@@ -108,7 +108,7 @@ spec:
       media:
         type: nfs
         server: ${SECRET_NFS_SVC}
-        path: "#{ bootstrap_nfs_mnt }#"
+        path: ${SECRET_NFS_MNT}
         globalMounts:
           - path: /downloads
             subPath: downloads
