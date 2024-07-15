@@ -13,28 +13,81 @@ spec:
         kind: HelmRepository
         name: longhorn
         namespace: flux-system
+      interval: 15m
+  driftDetection:
+    mode: enabled
+  maxHistory: 3
   install:
+    crds: CreateReplace
     remediation:
-      retries: 5
+      retries: 3
   upgrade:
+    cleanupOnFail: true
+    crds: CreateReplace
     remediation:
-      retries: 5
+      retries: 3
   values:
+    pspEnable: false
+
+    preUpgradeChecker:
+      jobEnabled: false
+
+    persistence:
+      defaultClass: true
+      defaultFsType: ext4
+      defaultClassReplicaCount: 2
+      defaultDataLocality: best-effort
+      migratable: true
+
     defaultSettings:
-      concurrentAutomaticEngineUpgradePerNodeLimit: 1
+      orphanAutoDeletion: false
+      nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
+
+      concurrentAutomaticEngineUpgradePerNodeLimit: 2
+      storageOverProvisioningPercentage: 100
+      storageMinimalAvailablePercentage: 10
+      guaranteedInstanceManagerCPU: 5
+
       createDefaultDiskLabeledNodes: true
+      allowEmptyDiskSelectorVolume: false
+
+      defaultLonghornStaticStorageClass: longhorn
+      defaultDataPath: /var/lib/longhorn
       defaultDataLocality: best-effort
       defaultReplicaCount: 2
-      deletingConfirmationFlag: true
-      nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
-      orphanAutoDeletion: true
-      replicaAutoBalance: best-effort
       backupTarget: "nfs://10.32.1.5:/mnt/lab-pool/k3s"
-    longhornUI:
-      replicas: 2
+
+
+      backupstorePollInterval: 60
+      failedBackupTTL: 1440
+      allowRecurringJobWhileVolumeDetached: true
+      restoreVolumeRecurringJobs: true
+
+      snapshotDataIntegrity: fast-check
+      snapshotDataIntegrityImmediateCheckAfterSnapshotCreation: false
+      snapshotDataIntegrityCronjob: 0 8 */7 * *
+
+      autoCleanupSystemGeneratedSnapshot: true
+      autoDeletePodWhenVolumeDetachedUnexpectedly: true
+      removeSnapshotsDuringFilesystemTrim: enabled
+
+
+      upgradeChecker: false
+      v2DataEngine: false
+
+    csi:
+      attacherReplicaCount: 2
+      provisionerReplicaCount: 2
+      resizerReplicaCount: 2
+      snapshotterReplicaCount: 2
+
+
     ingress:
       enabled: true
       ingressClassName: "internal"
       host: longhorn.${SECRET_DOMAIN}
       path: /
 
+    metrics:
+      serviceMonitor:
+        enabled: true
