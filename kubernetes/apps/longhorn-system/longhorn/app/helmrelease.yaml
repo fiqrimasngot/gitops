@@ -25,7 +25,7 @@ spec:
       createDefaultDiskLabeledNodes: true
       defaultDataLocality: best-effort
       defaultReplicaCount: 2
-      deletingConfirmationFlag: false
+      deletingConfirmationFlag: true
       nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
       orphanAutoDeletion: true
       replicaAutoBalance: best-effort
