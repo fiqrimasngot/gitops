@@ -21,10 +21,28 @@ spec:
       retries: 5
   values:
     defaultSettings:
-      backupTarget: "nfs://${SECRET_NFS_SVC}:#{ bootstrap_nfs_mnt }#"
-      defaultReplicaCount: 3
+      backupTarget: "nfs://#{ bootstrap_nfs_svc }#:#{ bootstrap_nfs_mnt }#"
+      orphanAutoDeletion: false
+      nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
+      defaultReplicaCount: 5
+      backupstorePollInterval: 60
+      failedBackupTTL: 1440
+      allowRecurringJobWhileVolumeDetached: true
+      restoreVolumeRecurringJobs: true
+
+      snapshotDataIntegrity: fast-check
+      snapshotDataIntegrityImmediateCheckAfterSnapshotCreation: false
+      snapshotDataIntegrityCronjob: 0 8 */7 * *
+
+      autoCleanupSystemGeneratedSnapshot: true
+      autoDeletePodWhenVolumeDetachedUnexpectedly: true
+      removeSnapshotsDuringFilesystemTrim: enabled
+      deletingConfirmationFlag: false
+
+      upgradeChecker: false
+      v2DataEngine: false
     longhornUI:
-      replicas: 3
+      replicas: 5
     ingress:
       enabled: true
       ingressClassName: "internal"
