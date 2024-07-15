@@ -24,7 +24,7 @@ spec:
       backupTarget: "nfs://#{ bootstrap_nfs_svc }#:#{ bootstrap_nfs_mnt }#"
       orphanAutoDeletion: false
       nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
-      defaultReplicaCount: 5
+      defaultReplicaCount: 2
       backupstorePollInterval: 60
       failedBackupTTL: 1440
       allowRecurringJobWhileVolumeDetached: true
@@ -37,12 +37,12 @@ spec:
       autoCleanupSystemGeneratedSnapshot: true
       autoDeletePodWhenVolumeDetachedUnexpectedly: true
       removeSnapshotsDuringFilesystemTrim: enabled
-      deletingConfirmationFlag: true
+      deletingConfirmationFlag: false
 
       upgradeChecker: false
       v2DataEngine: false
     longhornUI:
-      replicas: 5
+      replicas: 2
     ingress:
       enabled: true
       ingressClassName: "internal"
