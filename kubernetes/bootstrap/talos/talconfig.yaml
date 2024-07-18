@@ -23,7 +23,7 @@ cniConfig:
 nodes:
   - hostname: "k3s-1"
     ipAddress: "10.32.1.21"
-    installDisk: "/dev/sdb"
+    installDisk: "/dev/sda"
     talosImageURL: factory.talos.dev/installer/613e1592b2da41ae5e265e8789429f22e121aab91cb4deb6bc3c0b6262961245
     controlPlane: true
     networkInterfaces:
@@ -40,7 +40,7 @@ nodes:
           ip: "10.32.1.80"
   - hostname: "k3s-2"
     ipAddress: "10.32.1.22"
-    installDisk: "/dev/sdb"
+    installDisk: "/dev/sda"
     talosImageURL: factory.talos.dev/installer/613e1592b2da41ae5e265e8789429f22e121aab91cb4deb6bc3c0b6262961245
     controlPlane: true
     networkInterfaces:
@@ -57,7 +57,7 @@ nodes:
           ip: "10.32.1.80"
   - hostname: "k3s-3"
     ipAddress: "10.32.1.23"
-    installDisk: "/dev/sdb"
+    installDisk: "/dev/sda"
     talosImageURL: factory.talos.dev/installer/613e1592b2da41ae5e265e8789429f22e121aab91cb4deb6bc3c0b6262961245
     controlPlane: true
     networkInterfaces:
