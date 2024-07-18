@@ -11,7 +11,7 @@ machine:
     - 10.32.1.80
     - 127.0.0.1
   kubelet:
-    image: ghcr.io/siderolabs/kubelet:v1.30.2
+    image: ghcr.io/siderolabs/kubelet:v1.30.3
     extraArgs:
       rotate-server-certificates: "true"
     extraMounts:
