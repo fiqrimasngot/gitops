@@ -136,7 +136,7 @@ cluster:
       bind-address: 0.0.0.0
   proxy:
     disabled: true
-    image: registry.k8s.io/kube-proxy:v1.30.2
+    image: registry.k8s.io/kube-proxy:v1.30.3
   scheduler:
     image: registry.k8s.io/kube-scheduler:v1.30.2
     extraArgs:
