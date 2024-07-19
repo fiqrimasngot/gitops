@@ -36,8 +36,6 @@ spec:
             image:
               repository: ghcr.io/netbootxyz/netbootxyz
               tag: latest
-    defaultPodOptions:
-      hostNetwork: true
     service:
       main:
         controller: main
@@ -63,7 +61,7 @@ spec:
         enabled: true
         primary: false
         controller: main
-        type: NodePort
+        type: ClusterIP
         ports:
           tftp:
             enabled: true
