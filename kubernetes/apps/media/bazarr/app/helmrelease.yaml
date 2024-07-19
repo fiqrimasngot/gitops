@@ -94,7 +94,7 @@ spec:
       media:
         type: nfs
         server: ${SECRET_NFS_SVC}
-        path: ${SECRET_NFS_MNT}
+        path: "/mnt/lab-pool/k3s"
         globalMounts:
           - path: /media
 ---
