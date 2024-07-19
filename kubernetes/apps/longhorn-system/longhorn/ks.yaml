@@ -18,3 +18,25 @@ spec:
   interval: 30m
   retryInterval: 1m
   timeout: 5m
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app-config longhorn-config
+  namespace: flux-system
+spec:
+  targetNamespace: longhorn-system
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app-config
+  dependsOn:
+    - name: longhorn
+  path: ./kubernetes/apps/longhorn-system/longhorn/config
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  wait: true
+  interval: 30m
+  retryInterval: 1m
+  timeout: 3m
