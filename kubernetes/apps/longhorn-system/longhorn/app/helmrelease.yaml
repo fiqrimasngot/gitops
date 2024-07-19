@@ -29,18 +29,18 @@ spec:
   values:
 
     persistence:
-      defaultClassReplicaCount: 2
+      defaultClassReplicaCount: 3
       reclaimPolicy: Retain
     csi:
-      attacherReplicaCount: 2
-      provisionerReplicaCount: 2
-      resizerReplicaCount: 2
-      snapshotterReplicaCount: 2
+      attacherReplicaCount: 3
+      provisionerReplicaCount: 3
+      resizerReplicaCount: 3
+      snapshotterReplicaCount: 3
     defaultSettings:
       backupTarget: "nfs://10.32.1.5:/mnt/lab-pool/k3s"
       concurrentAutomaticEngineUpgradePerNodeLimit: 1
-      concurrentReplicaRebuildPerNodeLimit: 2
-      defaultReplicaCount: 2
+      concurrentReplicaRebuildPerNodeLimit: 3
+      defaultReplicaCount: 3
       node-drain-policy: allow-if-replica-is-stopped
       orphanAutoDeletion: "true"
       nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
