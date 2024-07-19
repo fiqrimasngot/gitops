@@ -23,12 +23,7 @@ spec:
             value: "1"
       dnsPolicy: ClusterFirstWithHostNet
       hostNetwork: true
-      automountServiceAccountToken: false
-      securityContext:
-        runAsUser: 568
-        runAsGroup: 568
-        fsGroup: 568
-        fsGroupChangePolicy: "OnRootMismatch"
+
     controllers:
       main:
         containers:
