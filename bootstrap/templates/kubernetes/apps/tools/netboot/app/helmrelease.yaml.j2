@@ -88,7 +88,7 @@ spec:
     persistence:
       config:
         enabled: true
-        storageClass: nfs-csi
+        storageClass: longhorn
         accessMode: ReadWriteOnce
         size: 2Gi
         globalMounts:
@@ -96,7 +96,7 @@ spec:
         retain: true
       data:
         enabled: true
-        storageClass: nfs-csi
+        storageClass: longhorn
         accessMode: ReadWriteOnce
         size: 512Gi
         globalMounts:
