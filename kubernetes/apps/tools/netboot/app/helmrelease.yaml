@@ -92,7 +92,7 @@ spec:
         accessMode: ReadWriteOnce
         size: 2Gi
         globalMounts:
-          - path: /config ef
+          - path: /config
         retain: true
       data:
         enabled: true
