@@ -1,3 +1,3 @@
 ---
-providerRegex: ^(k3svm-1|k3svm-2|k3svm-3)$
+providerRegex: ^(k3s-1|k3s-2|k3s-3)$
 bypassDnsResolution: true
