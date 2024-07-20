@@ -22,15 +22,15 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app authentik
+  name: &app1 authentik
   namespace: flux-system
 spec:
-  dependsOn:
-    - name: authentik-redis
   targetNamespace: security
+  dependsOn:
+    - name: *app
   commonMetadata:
     labels:
-      app.kubernetes.io/name: *app
+      app.kubernetes.io/name: *app1
   path: ./kubernetes/apps/security/authentik/app
   prune: true
   sourceRef:
