@@ -2,16 +2,16 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app bazarr
+  name: &app vaultwarden
   namespace: flux-system
 spec:
-  targetNamespace: media
+  targetNamespace: security
   dependsOn:
     - name: longhorn
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  path: ./kubernetes/apps/media/bazarr/app
+  path: ./kubernetes/apps/security/vaultwarden/app
   prune: true
   sourceRef:
     kind: GitRepository
@@ -20,3 +20,4 @@ spec:
   interval: 30m
   retryInterval: 1m
   timeout: 5m
+
