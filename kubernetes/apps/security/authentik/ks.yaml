@@ -27,7 +27,7 @@ metadata:
 spec:
   targetNamespace: security
   dependsOn:
-    - name: *app
+    - name: authentik-redis
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app1
