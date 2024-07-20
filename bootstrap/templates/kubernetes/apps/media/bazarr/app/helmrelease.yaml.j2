@@ -94,7 +94,7 @@ spec:
       media:
         type: nfs
         server: ${SECRET_NFS_SVC}
-        path: "#{ bootstrap_nfs_mnt }#"
+        path: ${SECRET_NFS_MNT}
         globalMounts:
           - path: /media
 ---
