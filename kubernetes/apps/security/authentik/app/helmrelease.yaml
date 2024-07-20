@@ -1,59 +1,66 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta1.json
-apiVersion: helm.toolkit.fluxcd.io/v2beta2
+apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: authentik
 spec:
-  interval: 30m
+  interval: 5m
+  install:
+    timeout: 25m
+    remediation:
+      retries: 5
+  upgrade:
+    timeout: 25m
+    remediation:
+      retries: 5
+      remediateLastFailure: true
+    cleanupOnFail: true
   chart:
     spec:
+      # renovate: registryUrl=https://charts.goauthentik.io
       chart: authentik
-      version: 2023.10.2
-      interval: 30m
+      version: 2024.6.1
       sourceRef:
         kind: HelmRepository
         name: authentik
         namespace: flux-system
   values:
-    annotations:
-      secret.reloader.stakater.com/reload: authentik-secret,authentik-redis-secret
-    initContainers:
-      init-db:
-        image: ghcr.io/onedr0p/postgres-init:16.2
-        envFrom: &envFrom
-          - secretRef:
-              name: authentik-secret
-    authentik:
-      log_level: info
-      email:
-        port: 587
-        use_tls: true
-      error_reporting:
-        enabled: false
-        send_pii: false
-      redis:
-        host: "authentik-redis.security.svc.cluster.local"
-        password: ""
-
-    envFrom: *envFrom
-
-    ingress:
-      enabled: true
-      ingressClassName: internal
-      hosts:
-        - host: &host auth.${SECRET_DOMAIN}
-          paths:
-            - path: /
-
+    kubernetesIntegration: true
+    server:
+      ingress:
+        enabled: true
+        ingressClassName: internal
+        hosts:
+        - auth.${SECRET_DOMAIN}
     postgresql:
-      enabled: false
-
-    prometheus:
-      rules:
-        create: true
-      serviceMonitor:
-        create: true
-
+      enabled: true
+      primary:
+        persistence:
+          existingClaim: authentik-db
+      auth:
+        password: ${SECRET_AUTHENTIK_DB_PASSWORD}
     redis:
-      enabled: false
+      enabled: true
+      architecture: standalone
+      global:
+        storageClass: longhorn
+    authentik:
+      secret_key: ${SECRET_AUTHENTIK_SECRET_KEY}
+      postgresql:
+        name: authentik
+        user: authentik
+        password: ${SECRET_AUTHENTIK_DB_PASSWORD}
+    global:
+      addPrometheusAnnotations: true
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: authentik-db
+spec:
+  storageClassName: longhorn
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
