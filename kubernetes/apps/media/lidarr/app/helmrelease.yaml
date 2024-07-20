@@ -116,7 +116,7 @@ spec:
         enabled: true
         type: nfs
         server: ${SECRET_NFS_SVC}
-        path: "/mnt/lab-pool/k3s"
+        path: ${SECRET_NFS_MNT}
         globalMounts:
           - path: /media
 ---
