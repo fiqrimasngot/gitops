@@ -29,7 +29,6 @@ nodes:
     ipAddress: "#{ item.address }#"
     #% if item.disk.startswith('/') %#
     installDisk: "#{ item.disk }#"
-    wipe: true
     #% else %#
     installDiskSelector:
       serial: "#{ item.disk }#"
