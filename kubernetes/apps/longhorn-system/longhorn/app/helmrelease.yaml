@@ -42,20 +42,19 @@ spec:
 
     defaultSettings:
       backupTarget: nfs://10.32.1.5:/mnt/lab-pool/k3s
-      storageMinimalAvailablePercentage: 20
-      defaultLonghornStaticStorageClass: longhorn
-      defaultReplicaCount: 3
       orphanAutoDeletion: true
-      nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
-      backupstorePollInterval: 60
       concurrentAutomaticEngineUpgradePerNodeLimit: 3
       defaultDataPath: /var/lib/longhorn
-      defaultDataLocality: true
-      replicaAutoBalance: true
+      defaultDataLocality: best-effort
+      defaultLonghornStaticStorageClass: longhorn
+      storageMinimalAvailablePercentage: 0
+      storageReservedPercentageForDefaultDisk: 0
+      nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
       allowRecurringJobWhileVolumeDetached: false
       autoCleanupSystemGeneratedSnapshot: true
       autoDeletePodWhenVolumeDetachedUnexpectedly: true
       disableSchedulingOnCordonedNode: true
+      defaultReplicaCount: 3
       engineReplicaTimeout: 8
       failedBackupTTL: 1440
       restoreVolumeRecurringJobs: true
@@ -63,6 +62,7 @@ spec:
       snapshotDataIntegrityCronjob: 0 8 */7 * *
       upgradeChecker: false
       v2DataEngine: false
+      taintToleration: node-role.kubernetes.io/control-plane:NoSchedule
     metrics:
       serviceMonitor:
         enabled: true
