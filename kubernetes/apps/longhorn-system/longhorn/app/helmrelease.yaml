@@ -4,35 +4,38 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: longhorn
-  namespace: longhorn-system
 spec:
-  interval: 30m
+  interval: 5m
   chart:
     spec:
-      # renovate: registryUrl=https://charts.longhorn.io
       chart: longhorn
       version: 1.6.2
+      interval: 10m
       sourceRef:
         kind: HelmRepository
         name: longhorn
         namespace: flux-system
+
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+
   values:
-    controllerType: deployment
     persistence:
       defaultClass: true
       defaultClassReplicaCount: 3
       reclaimPolicy: Retain
-      recurringJobs:
+      recurringJobSelector:
         enable: false
-        jobList: []
-    csi:
-      attacherReplicaCount: 1
-      provisionerReplicaCount: 1
-      resizerReplicaCount: 1
-      snapshotterReplicaCount: 1
 
-    longhornUI:
-      replicas: 1
+    preUpgradeChecker.jobEnabled: false
+
+    metrics:
+      serviceMonitor:
+        enabled: true
 
     ingress:
       enabled: true
@@ -63,12 +66,10 @@ spec:
       upgradeChecker: false
       v2DataEngine: false
       taintToleration: node-role.kubernetes.io/control-plane:NoSchedule
-    metrics:
-      serviceMonitor:
-        enabled: true
-    resources:
-      requests:
-        cpu: 50m
-        memory: 50Mi
-      # limits:
-      #   memory: 1500Mi
+    longhornManager:
+      tolerations: &tolerations
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/control-plane
+          operator: Exists
+    longhornDriver:
+      tolerations: *tolerations

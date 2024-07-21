@@ -19,24 +19,25 @@ spec:
   retryInterval: 1m
   timeout: 5m
 ---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app-config longhorn-config
+  name: &app storageclass
   namespace: flux-system
 spec:
-  targetNamespace: longhorn-system
+  targetNamespace: storage
   commonMetadata:
     labels:
-      app.kubernetes.io/name: *app-config
+      app.kubernetes.io/name: *app
   dependsOn:
     - name: longhorn
-  path: ./kubernetes/apps/longhorn-system/longhorn/config
+  path: ./kubernetes/apps/longhorn-system/longhorn/storageclass
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
-  wait: true
+  wait: false
   interval: 30m
   retryInterval: 1m
-  timeout: 3m
+  timeout: 5m
