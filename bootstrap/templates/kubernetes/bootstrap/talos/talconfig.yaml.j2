@@ -29,6 +29,7 @@ nodes:
     ipAddress: "#{ item.address }#"
     #% if item.disk.startswith('/') %#
     installDisk: "#{ item.disk }#"
+    wipe: true
     #% else %#
     installDiskSelector:
       serial: "#{ item.disk }#"
@@ -163,7 +164,7 @@ patches:
               apiVersion: pod-security.admission.config.k8s.io/v1alpha1
               defaults:
                 enforce: privileged
-              kind: PodSecurityConfiguration  
+              kind: PodSecurityConfiguration
 
 
   # for longhorn Data Path Mounts
@@ -256,7 +257,7 @@ controlPlane:
 
     # Enable K8s Talos API Access
     - |-
-      machine:      
+      machine:
         features:
           kubernetesTalosAPIAccess:
             enabled: true
