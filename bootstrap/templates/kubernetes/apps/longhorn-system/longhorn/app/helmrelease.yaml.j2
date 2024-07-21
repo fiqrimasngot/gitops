@@ -41,7 +41,7 @@ spec:
       path: /
 
     defaultSettings:
-      backupTarget: "nfs://#{ bootstrap_nfs_svc }#:#{ bootstrap_nfs_mnt }#"
+      backupTarget: nfs://#{ bootstrap_nfs_svc }#:#{ bootstrap_nfs_mnt }#
       storageMinimalAvailablePercentage: 20
       defaultLonghornStaticStorageClass: longhorn
       defaultReplicaCount: 3

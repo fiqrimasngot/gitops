@@ -41,7 +41,7 @@ spec:
       path: /
 
     defaultSettings:
-      backupTarget: "nfs://10.32.1.5:/mnt/lab-pool/k3s"
+      backupTarget: nfs://10.32.1.5:/mnt/lab-pool/k3s
       storageMinimalAvailablePercentage: 20
       defaultLonghornStaticStorageClass: longhorn
       defaultReplicaCount: 3
