@@ -1,0 +1,9 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: expressjs-k8s
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://alexellis.github.io/expressjs-k8s/
