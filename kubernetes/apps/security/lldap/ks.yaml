@@ -8,7 +8,6 @@ spec:
   targetNamespace: security
   dependsOn:
     - name: cloudnative-pg
-      namespace: database
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
