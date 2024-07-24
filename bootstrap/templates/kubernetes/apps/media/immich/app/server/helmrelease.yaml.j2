@@ -105,7 +105,7 @@ kind: PersistentVolume
 metadata:
   name: immich-nfs
 spec:
-  storageClassName: immich-nfs
+  storageClassName: nfs-csi
   capacity:
     storage: 1Mi
   accessModes: ["ReadWriteMany"]
