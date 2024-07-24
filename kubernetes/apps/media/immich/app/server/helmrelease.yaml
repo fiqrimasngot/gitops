@@ -122,7 +122,7 @@ metadata:
   name: immich-nfs
 spec:
   accessModes: ["ReadWriteMany"]
-  storageClassName: immich-nfs
+  storageClassName: nfs-csi
   resources:
     requests:
       storage: 1Mi
