@@ -26,7 +26,7 @@ spec:
     keepHistory: false
   dependsOn:
     - name: immich-server
-      namespace: default
+      namespace: media
   values:
     controllers:
       immich-machine-learning:

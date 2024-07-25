@@ -43,7 +43,7 @@ spec:
           name: cluster-secret
           key: aws-access-key-id
         secretAccessKey:
-          name: cloudnative-pg-secret
+          name: cluster-secret
           key: aws-secret-access-key
 
   # Note: previousCluster needs to be set to the name of the previous
