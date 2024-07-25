@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -9,72 +9,85 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 3.2.1
+      version: 3.1.0
       sourceRef:
         kind: HelmRepository
         name: bjw-s-charts
         namespace: flux-system
-  maxHistory: 2
   install:
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
+  dependsOn:
+    - name: cloudnative-pg
+      namespace: database
   values:
-    defaultPodOptions:
-      securityContext:
-        runAsUser: 568
-        runAsGroup: 568
-        fsGroup: 568
-        fsGroupChangePolicy: OnRootMismatch
-      topologySpreadConstraints:
-        - maxSkew: 1
-          topologyKey: kubernetes.io/hostname
-          whenUnsatisfiable: DoNotSchedule
-          labelSelector:
-            matchLabels:
-              app.kubernetes.io/name: *app
     controllers:
       immich-server:
-        type: statefulset
+        strategy: RollingUpdate
         annotations:
-          configmap.reloader.stakater.com/reload: &configMap immich-configmap
-          secret.reloader.stakater.com/reload: &secret immich-secret
-        initContainers:
-          01-init-db:
-            envFrom: &envFrom
-              - configMapRef:
-                  name: *configMap
-              - secretRef:
-                  name: *secret
-            image:
-              repository: ghcr.io/onedr0p/postgres-init
-              tag: '16.3'
+          reloader.stakater.com/auto: "true"
         containers:
           app:
             image:
               repository: ghcr.io/immich-app/immich-server
+              # renovate: datasource=github-releases depName=immich-app/immich
               tag: v1.109.2
-            envFrom: *envFrom
+            env:
+              IMMICH_PORT: &port 3001
+            envFrom:
+              - secretRef:
+                  name: immich-secret
+              - configMapRef:
+                  name: immich-config
+            probes:
+              liveness: &probes
+                enabled: false
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/server-info/ping
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 30
+              readiness: *probes
+              startup:
+                enabled: false
             resources:
               requests:
                 cpu: 100m
                 memory: 250Mi
+              limits:
+                memory: 1Gi
+        pod:
+          securityContext:
+            runAsUser: 568
+            runAsGroup: 568
+            runAsNonRoot: true
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
+
     service:
       main:
-        controller: *app
+        controller: immich-server
         ports:
           http:
-            port: 3001
+            port: *port
 
     ingress:
       main:
         enabled: true
         className: internal
+        annotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: "0"
         hosts:
           - host: &host immich.${SECRET_DOMAIN}
             paths:
@@ -83,8 +96,6 @@ spec:
                 service:
                   identifier: main
                   port: http
-        tls:
-          - hosts: [*host]
 
     persistence:
       library:
@@ -103,30 +114,3 @@ spec:
         globalMounts:
           - path: /usr/src/app/.transformers_cache
 
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: immich-nfs
-spec:
-  storageClassName: nfs-csi
-  capacity:
-    storage: 1Mi
-  accessModes: ["ReadWriteMany"]
-  persistentVolumeReclaimPolicy: Retain
-  nfs:
-    server: ${SECRET_NFS_SVC}
-    path: ${SECRET_NFS_MNT}/immich
-  # Note: The first two options are strictly for NFSv4.2
-  mountOptions: ["nfsvers=4.2", "nconnect=8", "hard", "noatime"]
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: immich-nfs
-spec:
-  accessModes: ["ReadWriteMany"]
-  storageClassName: nfs-csi
-  resources:
-    requests:
-      storage: 1Mi

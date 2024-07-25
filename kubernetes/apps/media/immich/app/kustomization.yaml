@@ -5,5 +5,6 @@ kind: Kustomization
 resources:
   - ./configmap.yaml
   - ./secrets.sops.yaml
+  - ./pvc.yaml
   - ./server
   - ./machine-learning
