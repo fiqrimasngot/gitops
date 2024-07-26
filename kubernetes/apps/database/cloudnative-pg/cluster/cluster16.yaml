@@ -1,36 +1,43 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/postgresql.cnpg.io/cluster_v1.json
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
   name: postgres
 spec:
   instances: 1
-  imageName: ghcr.io/cloudnative-pg/postgresql:16.3-10
+  imageName: ghcr.io/tensorchord/cloudnative-pgvecto.rs:14.10-v0.2.0
+  primaryUpdateStrategy: unsupervised
   storage:
-    size: 5Gi
+    size: 20Gi
     storageClass: longhorn
-  enableSuperuserAccess: true
   superuserSecret:
     name: cloudnative-pg
+  enableSuperuserAccess: true
+  postgresql:
+    shared_preload_libraries:
+      - "vectors.so"
+    parameters:
+      max_connections: "600"
+      max_slot_wal_keep_size: 10GB
+      shared_buffers: 512MB
   resources:
     requests:
-      cpu: 200m
-    limits:
-      memory: 1Gi
+      memory: "512Mi"
+    # limits:
+    #   hugepages-2Mi: "512Mi"
   monitoring:
     enablePodMonitor: true
-    # see https://github.com/cloudnative-pg/cloudnative-pg/issues/2501
-    podMonitorMetricRelabelings:
-      - sourceLabels: ["cluster"]
-        targetLabel: cnpg_cluster
-        action: replace
-      - regex: cluster
-        action: labeldrop
   backup:
     retentionPolicy: 30d
     barmanObjectStore: &barmanObjectStore
+      wal:
+        compression: bzip2
+        maxParallel: 8
+      destinationPath: s3://cloudnative-pg/
       endpointURL: http://minio.storage.svc.cluster.local:9000
+      # Note: serverName version needs to be incremented
+      # when recovering from an existing cnpg cluster
+      serverName: &currentCluster postgres-v2
       s3Credentials:
         accessKeyId:
           name: cluster-secret
@@ -38,23 +45,34 @@ spec:
         secretAccessKey:
           name: cluster-secret
           key: aws-secret-access-key
-      destinationPath: s3://cloudnative-pg/
-      data:
-        compression: bzip2
-      wal:
-        compression: bzip2
-        maxParallel: 4
-      # NOTE: serverName version needs to be incremented
-      # when recovering from an existing cnpg cluster
-      serverName: &currentCluster postgres16-003
-  # NOTE: previousCluster needs to be set to the name of the previous
+
+  # Note: previousCluster needs to be set to the name of the previous
   # cluster when recovering from an existing cnpg cluster
   # bootstrap:
   #   recovery:
-  #     source: &previousCluster postgres16-002
-  # NOTE: externalClusters is needed when recovering from an existing cnpg cluster
+  #     source: &previousCluster postgres-v1
+  # # Note: externalClusters is needed when recovering from an existing cnpg cluster
   # externalClusters:
   #   - name: *previousCluster
   #     barmanObjectStore:
   #       <<: *barmanObjectStore
   #       serverName: *previousCluster
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-lb
+  namespace: database
+  annotations:
+    io.cilium/lb-ipam-ips: ${SECRET_POSTGRES_SVC}
+spec:
+  type: LoadBalancer
+  externalTrafficPolicy: Cluster
+  ports:
+    - name: postgres
+      port: 5432
+      protocol: TCP
+      targetPort: 5432
+  selector:
+    postgresql: postgres
+    role: primary
