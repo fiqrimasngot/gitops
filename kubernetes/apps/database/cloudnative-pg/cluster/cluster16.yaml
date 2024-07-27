@@ -20,7 +20,7 @@ spec:
   # bootstrap:
   #   recovery:
   #     source: &previousCluster postgres-v39
-  # postgresql:
+  postgresql:
     parameters:
       max_connections: "600"
       shared_buffers: 512MB
