@@ -1,69 +1,72 @@
 ---
+# yaml-language-server: $schema=https://kubernetes-schemas.kokoro.wtf/postgresql.cnpg.io/cluster_v1.json
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
   name: postgres
 spec:
   instances: 1
-  imageName: ghcr.io/tensorchord/cloudnative-pgvecto.rs:14.10-v0.2.0
+  imageName: ghcr.io/tensorchord/cloudnative-pgvecto.rs:16.2-v0.2.1
   primaryUpdateStrategy: unsupervised
   storage:
-    size: 20Gi
+    size: 10Gi
     storageClass: longhorn
   superuserSecret:
     name: cloudnative-pg
   enableSuperuserAccess: true
-  postgresql:
-    shared_preload_libraries:
-      - "vectors.so"
+  nodeMaintenanceWindow:
+    inProgress: false
+    reusePVC: true
+  # bootstrap:
+  #   recovery:
+  #     source: &previousCluster postgres-v39
+  # postgresql:
     parameters:
       max_connections: "600"
-      max_slot_wal_keep_size: 10GB
       shared_buffers: 512MB
-  resources:
-    requests:
-      memory: "512Mi"
-    # limits:
-    #   hugepages-2Mi: "512Mi"
+    shared_preload_libraries:
+      - "vectors.so"
   monitoring:
     enablePodMonitor: true
   backup:
     retentionPolicy: 30d
-    barmanObjectStore: &barmanObjectStore
+    barmanObjectStore:
       wal:
         compression: bzip2
         maxParallel: 8
       destinationPath: s3://cloudnative-pg/
       endpointURL: http://minio.storage.svc.cluster.local:9000
-      # Note: serverName version needs to be incremented
-      # when recovering from an existing cnpg cluster
-      serverName: &currentCluster postgres-v2
+      serverName: &currentCluster postgres-v40
       s3Credentials:
         accessKeyId:
-          name: cluster-secret
+          name: cloudnative-pg
           key: aws-access-key-id
         secretAccessKey:
-          name: cluster-secret
+          name: cloudnative-pg
           key: aws-secret-access-key
-
-  # Note: previousCluster needs to be set to the name of the previous
-  # cluster when recovering from an existing cnpg cluster
-  # bootstrap:
-  #   recovery:
-  #     source: &previousCluster postgres-v1
-  # # Note: externalClusters is needed when recovering from an existing cnpg cluster
+  # Note: externalClusters is needed when recovering from an existing cnpg cluster
   # externalClusters:
   #   - name: *previousCluster
   #     barmanObjectStore:
-  #       <<: *barmanObjectStore
-  #       serverName: *previousCluster
+  #       wal:
+  #         compression: bzip2
+  #         maxParallel: 8
+  #       destinationPath: s3://cnpg/
+  #       endpointURL: https://${CLUSTER_SECRET_CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com
+  #       s3Credentials:
+  #         accessKeyId:
+  #           name: cloudnative-pg
+  #           key: aws-access-key-id
+  #         secretAccessKey:
+  #           name: cloudnative-pg
+  #           key: aws-secret-access-key
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: postgres-lb
-  namespace: database
   annotations:
+    # external-dns.alpha.kubernetes.io/hostname: postgres.kokoro.wtf
     io.cilium/lb-ipam-ips: ${SECRET_POSTGRES_SVC}
 spec:
   type: LoadBalancer
@@ -74,5 +77,5 @@ spec:
       protocol: TCP
       targetPort: 5432
   selector:
-    postgresql: postgres
+    cnpg.io/cluster: postgres
     role: primary
