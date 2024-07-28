@@ -97,7 +97,6 @@ spec:
       app:
         className: internal
         annotations:
-          authentik.home.arpa/enabled: "true"
           nginx.ingress.kubernetes.io/auth-signin: |-
             https://immich.${SECRET_DOMAIN}/outpost.goauthentik.io/start?rd=$escaped_request_uri
           nginx.ingress.kubernetes.io/auth-url: |-
