@@ -12,7 +12,7 @@ spec:
     size: 10Gi
     storageClass: longhorn
   superuserSecret:
-    name: cloudnative-pg
+    name: cloudnative-pg-secrets
   enableSuperuserAccess: true
   nodeMaintenanceWindow:
     inProgress: false
