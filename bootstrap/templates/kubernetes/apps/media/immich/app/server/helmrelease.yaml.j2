@@ -103,3 +103,127 @@ spec:
         type: emptyDir
         globalMounts:
           - path: /usr/src/app/.transformers_cache
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app immich-server
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.2.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    defaultPodOptions:
+      enableServiceLinks: false
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [65537]
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: *app
+
+    controllers:
+      immich:
+        strategy: RollingUpdate
+        annotations:
+          reloader.stakater.com/auto: "true"
+          configmap.reloader.stakater.com/reload: &configMap immich-config
+          secret.reloader.stakater.com/reload: &secret immich-secret
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 16
+            envFrom: &envFrom
+              - configMapRef:
+                  name: *configMap
+              - secretRef:
+                  name: *secret
+        containers:
+          app:
+            image:
+              repository: ghcr.io/immich-app/immich-server
+              tag: v1.110.0@sha256:9de91632ea5c0aabcd5558cab8b270f6bde00679fc6bdc35806fb49367e4a583
+            envFrom: *envFrom
+            env:
+              LOG_LEVEL: log
+              # IMMICH_CONFIG_FILE: /config/immich-config.json
+              IMMICH_MEDIA_LOCATION: &mediaLocation /usr/src/app/upload
+              IMMICH_PORT: &port 3001
+            resources:
+              requests:
+                cpu: 100m
+              limits:
+                memory: 1100M
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/server-info/ping
+                    port: 3001
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 30
+              readiness: *probes
+              startup:
+                enabled: false
+    service:
+      app:
+        controller: immich
+        ports:
+          http:
+            port: *port
+    ingress:
+      app:
+        className: internal
+        hosts:
+          - host: &host immich.${SECRET_DOMAIN}
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+
+    persistence:
+      # config:
+      #   type: configMap
+      #   name: immich-server-config
+      #   globalMounts:
+      #     - path: /config
+      library:
+        existingClaim: immich-nfs
+        globalMounts:
+          - path: *mediaLocation
+      # geocoding-dump:
+      #   type: emptyDir
+      #   globalMounts:
+      #     - path: /usr/src/app/.reverse-geocoding-dump
+      # transformers-cache:
+      #   type: emptyDir
+      #   globalMounts:
+      #     - path: /usr/src/app/.transformers_cache
