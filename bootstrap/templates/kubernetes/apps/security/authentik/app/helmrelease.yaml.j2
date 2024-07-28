@@ -64,3 +64,26 @@ spec:
   resources:
     requests:
       storage: 2Gi
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+    name: authentik-outpost
+    annotations:
+      nginx.ingress.kubernetes.io/enable-global-auth: "false"
+spec:
+    rules:
+        - host: auth.internal.${SECRET_DOMAIN}
+          http:
+              paths:
+              - path: /outpost.goauthentik.io
+                pathType: Prefix
+                backend:
+                    # Or, to use an external Outpost, create an ExternalName service and reference that here.
+                    # See https://kubernetes.io/docs/concepts/services-networking/service/#externalname
+                    service:
+                        name: ak-outpost-ingress
+                        port:
+                            number: 9000
+
+
