@@ -105,20 +105,18 @@ spec:
                   port: http
 
     persistence:
-      # config:
-      #   type: configMap
-      #   name: immich-server-config
-      #   globalMounts:
-      #     - path: /config
       library:
+        enabled: true
         existingClaim: immich-nfs
         globalMounts:
-          - path: *mediaLocation
-      # geocoding-dump:
-      #   type: emptyDir
-      #   globalMounts:
-      #     - path: /usr/src/app/.reverse-geocoding-dump
-      # transformers-cache:
-      #   type: emptyDir
-      #   globalMounts:
-      #     - path: /usr/src/app/.transformers_cache
+          - path: /usr/src/app/upload
+      geocoding-dump:
+        enabled: true
+        type: emptyDir
+        globalMounts:
+          - path: /usr/src/app/.reverse-geocoding-dump
+      transformers-cache:
+        enabled: true
+        type: emptyDir
+        globalMounts:
+          - path: /usr/src/app/.transformers_cache
