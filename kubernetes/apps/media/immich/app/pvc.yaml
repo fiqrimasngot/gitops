@@ -20,7 +20,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: immich-nfs
 spec:
-  accessModes: ["ReadWriteOnce"]
+  accessModes: ["ReadWriteMany"]
   storageClassName: nfs-csi
   resources:
     requests:
