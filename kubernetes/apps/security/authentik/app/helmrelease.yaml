@@ -29,7 +29,9 @@ spec:
     server:
       ingress:
         enabled: true
-        ingressClassName: internal
+        ingressClassName: external
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
         hosts:
         - auth.${SECRET_DOMAIN}
     postgresql:
