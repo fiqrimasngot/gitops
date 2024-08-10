@@ -6,3 +6,4 @@ resources:
   - ./home-assistant/ks.yaml
   - ./paperless/ks.yaml
   - ./changedetection/ks.yaml
+  - ./actual/ks.yaml
