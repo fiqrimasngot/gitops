@@ -1,0 +1,80 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: actual
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 2.6.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  values:
+    controllers:
+      main:
+        type: statefulset
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        pod:
+          enableServiceLinks: false
+          securityContext:
+            runAsUser: ${USER_ID}
+            runAsGroup: ${USER_ID}
+            fsGroup: ${USER_ID}
+            fsGroupChangePolicy: "OnRootMismatch"
+
+        containers:
+          main:
+            image:
+              repository: ghcr.io/actualbudget/actual-server
+              tag: 24.8.0@sha256:52a63c1e521b9dec706ca9699e6f625582176b6a21930496dbabe3e4d36e3f03
+
+    service:
+      main:
+        ports:
+          http:
+            port: 5006
+
+    ingress:
+      main:
+        enabled: true
+        # className: "internal-nginx"
+        className: "internal"
+        hosts:
+          - host: finance.${SECRET_DOMAIN}
+            paths:
+              - path: /
+                service:
+                  name: main
+                  port: http
+    persistence:
+      data:
+        enabled: true
+        existingClaim: actual-pvc
+        advancedMounts:
+          main:
+            main:
+              - path: /data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: actual-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Mi
+  storageClassName: longhorn
