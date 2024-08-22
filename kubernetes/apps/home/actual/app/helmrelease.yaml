@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: actual
+  name: &app actual
 spec:
   interval: 30m
   chart:
@@ -44,6 +44,7 @@ spec:
 
     service:
       main:
+        controller: *app
         ports:
           http:
             port: 5006
@@ -58,7 +59,7 @@ spec:
               - path: /
                 pathType: Prefix
                 service:
-                  name: main
+                  identifier: main
                   port: http
     persistence:
       data:
