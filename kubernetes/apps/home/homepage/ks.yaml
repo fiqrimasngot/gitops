@@ -2,22 +2,19 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app lldap
+  name: &app homepage
   namespace: flux-system
 spec:
-  targetNamespace: security
-  dependsOn:
-    - name: cloudnative-pg
+  targetNamespace: home
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  path: ./kubernetes/apps/security/lldap/app
+  path: ./kubernetes/apps/home/homepage/app
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
-  wait: true
+  wait: false
   interval: 30m
   retryInterval: 1m
   timeout: 5m
-

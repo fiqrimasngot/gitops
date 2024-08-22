@@ -7,3 +7,4 @@ resources:
   - ./paperless/ks.yaml
   - ./changedetection/ks.yaml
   - ./actual/ks.yaml
+  - ./homepage/ks.yaml
