@@ -20,6 +20,7 @@ resources:
   - ./spegel.yaml
   - ./stakater.yaml
   - ./external-dns.yaml
+  - ./hajimari.yaml
   - ./ingress-nginx.yaml
   - ./k8s-gateway.yaml
   - ./longhorn.yaml
