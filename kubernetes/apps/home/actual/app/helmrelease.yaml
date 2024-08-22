@@ -44,7 +44,7 @@ spec:
 
     service:
       main:
-        controller: *app
+        controller: main
         ports:
           http:
             port: 5006
