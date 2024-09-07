@@ -22,16 +22,16 @@ cniConfig:
 
 nodes:
   - hostname: "k3svm-1"
-    ipAddress: "10.32.1.51"
+    ipAddress: "10.32.1.22"
     installDisk: "/dev/sda"
     talosImageURL: factory.talos.dev/installer/613e1592b2da41ae5e265e8789429f22e121aab91cb4deb6bc3c0b6262961245
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
-          hardwareAddr: "bc:24:11:ca:39:d2"
+          hardwareAddr: "00:25:90:4b:26:3a"
         dhcp: false
         addresses:
-          - "10.32.1.51/24"
+          - "10.32.1.22/24"
         routes:
           - network: 0.0.0.0/0
             gateway: "10.32.1.1"
@@ -39,16 +39,16 @@ nodes:
         vip:
           ip: "10.32.1.80"
   - hostname: "k3svm-2"
-    ipAddress: "10.32.1.52"
+    ipAddress: "10.32.1.105"
     installDisk: "/dev/sda"
     talosImageURL: factory.talos.dev/installer/613e1592b2da41ae5e265e8789429f22e121aab91cb4deb6bc3c0b6262961245
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
-          hardwareAddr: "bc:24:11:e5:0a:0b"
+          hardwareAddr: "bc:24:11:e3:7d:97"
         dhcp: false
         addresses:
-          - "10.32.1.52/24"
+          - "10.32.1.105/24"
         routes:
           - network: 0.0.0.0/0
             gateway: "10.32.1.1"
@@ -56,16 +56,16 @@ nodes:
         vip:
           ip: "10.32.1.80"
   - hostname: "k3svm-3"
-    ipAddress: "10.32.1.53"
+    ipAddress: "10.32.1.112"
     installDisk: "/dev/sda"
     talosImageURL: factory.talos.dev/installer/613e1592b2da41ae5e265e8789429f22e121aab91cb4deb6bc3c0b6262961245
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
-          hardwareAddr: "bc:24:11:9e:6b:67"
+          hardwareAddr: "bc:24:11:d1:2f:a9"
         dhcp: false
         addresses:
-          - "10.32.1.53/24"
+          - "10.32.1.112/24"
         routes:
           - network: 0.0.0.0/0
             gateway: "10.32.1.1"
